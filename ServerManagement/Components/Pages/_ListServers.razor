@@ -1,0 +1,39 @@
+﻿
+<ul>
+@foreach(var server in servers)
+{
+     <_Server server="server"></_Server>
+}
+
+</ul>
+
+@code
+{
+    private ServerReporsitory SR = new ServerReporsitory();
+    private List<Server> servers;
+
+    [Parameter]
+    public string CityName { get; set; }
+    [Parameter]
+    public string ServerFilter { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (CityName != null)
+            servers = SR.GetServerByCity(CityName);
+        else if (ServerFilter != null)
+            servers = SR.GetServerByName(ServerFilter);
+        else
+            servers = SR.GetServer();
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (CityName != null)
+             servers = SR.GetServerByCity(CityName);
+        else if (ServerFilter != null)
+            servers = SR.GetServerByName(ServerFilter);
+        else
+            servers = SR.GetServer();
+    }
+}

@@ -1,0 +1,36 @@
+﻿@page "/ServerComponent"
+@rendermode InteractiveServer
+
+<h3>Server Component</h3>
+
+<_ListCity  OnChildCitySelect ="OnParentCity"></_ListCity>
+<br />
+<_SearchBox OnSeverFilter="OnParentSever"></_SearchBox>
+<br />
+<_ListServers cityName="@selectCity" ServerFilter="@filterServer"></_ListServers>
+<br />
+<a href="/server/add" class="btn btn-secondary">Add Server</a>
+<p>Select sever is: @filterServer</p>
+@code {
+    private string selectCity;
+    private string filterServer;
+
+    protected override void OnInitialized()
+    {
+        selectCity = "Nashville";
+    }
+
+    private void OnParentCity(string cityName)
+    {
+        selectCity = cityName;
+        filterServer = null;
+    }
+
+    private void OnParentSever(string severFileter)
+    {
+        this.filterServer = severFileter;
+        selectCity = null;
+    }
+
+  
+}

@@ -1,0 +1,88 @@
+﻿
+
+<div class="container-fluid">
+    <div class="row ">
+
+        @foreach (var city in cities)
+        {
+            <div class="col-3 ">
+                <div class="card align-content-cnter @(selectCity.Equals(city, StringComparison.OrdinalIgnoreCase)?"border-primary":"")">
+                    
+                    <div class="card-body" style="align-content:center">
+                        <img src="@($"/Images/{city}.jpg")" style="width:350px; height:320px" class="card-img-top" alt="..." @onclick="() => SelectCity(city)">
+                        <btn class="btn btn-primary" type="button" @onclick="()=> SelectCity(city)">@city</btn>
+                    </div>
+                    
+                </div>
+            </div>
+
+        }
+
+    </div>
+</div>
+
+@code {
+    public List<string> cities = new List<string>() { "Nashville", "Nolensville", "Franklin", "Knoxville" };
+    private bool IsSelectCity = false;
+    [Parameter]
+    public EventCallback<string> OnChildCitySelect { get; set; }
+    private string selectCity = String.Empty;
+
+    private async Task SelectCity(string cityName)
+    {
+        selectCity = cityName;
+        await OnChildCitySelect.InvokeAsync(cityName);    
+    }
+
+    protected override void OnParametersSet()
+    {
+        
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

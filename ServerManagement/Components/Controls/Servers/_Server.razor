@@ -1,0 +1,39 @@
+﻿
+@inject NavigationManager navigationManager
+
+<p>
+    @server.Name in server.City is
+    @if (server.IsOnline)
+    {
+        <span style="color:green">Online</span>
+    }
+    else
+    {
+        <span style="color:red">Offline</span>
+    }
+    <a href="/server/Edit/@server.Id" class="btn btn-link">Edit</a>
+    <br />
+    <EditForm Model="server" FormName="@($"form-name{server.Id}")" OnSubmit="(() => DelectServer(server.Id))">
+        <button class="btn btn-danger" type="submit">Delete</button>
+    </EditForm>
+</p>
+
+
+@code {
+    [Parameter]
+    public Server server { get; set; }
+
+    private Server deleteServer;
+
+    private ServerReporsitory _SR = new ServerReporsitory();
+
+    private void DelectServer(int id)
+    {
+        if (id > 0)
+        {
+            _SR.Delete(id);
+            navigationManager.NavigateTo("/serverComponent");
+
+        }
+    }
+}

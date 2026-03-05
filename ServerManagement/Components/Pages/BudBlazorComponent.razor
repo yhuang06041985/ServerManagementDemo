@@ -1,0 +1,52 @@
+﻿@page "/bud-blazor-component"
+@using MudBlazor
+@rendermode InteractiveServer
+@inject ServerReporsitory SR
+
+<MudTable T="Server" ServerData="LoadData" Loading="@_load" RowsPerPage="4">
+	<HeaderContent>
+		<MudTh>Id</MudTh>
+		<MudTh>Name</MudTh>
+		<MudTh>City</MudTh>
+		<MudTh>IsOnline</MudTh>
+	</HeaderContent>
+	<RowTemplate>
+		<MudTd DataLabel="Id">@context.Id</MudTd>
+		<MudTd DataLabel="Name">@context.Name</MudTd>
+		<MudTd DataLabel="City">@context.City.Name</MudTd>
+		<MudTd DataLabel="IsOnline">@context.IsOnline</MudTd>
+	</RowTemplate>
+</MudTable>
+<MudDataGrid T="Server" ServerData="LoadData" Loading="@_load" PageSize="4">
+	<Columns>
+		<MudDataGridColumn T="Server" Field="@nameof(Server.Id)" Title="Id"></MudDataGridColumn>
+		<MudDataGridColumn T="Server" Field="@nameof(Server.Name)" Title="Name"></MudDataGridColumn>
+		<MudDataGridColumn T="Server" Field="@nameof(Server.City.Name)" Title="City"></MudDataGridColumn>
+		<MudDataGridColumn T="Server" Field="@nameof(Server.IsOnline)" Title="IsOnline"></MudDataGridColumn>
+	</Columns>
+</MudDataGrid>
+
+<MudDialog>
+	<DialogContent>
+		<h3>Dialog Content</h3>
+	</DialogContent>
+	<DialogActions>
+		<MudButton Color="Color.Primary" OnClick="(()=>DialogResult.Ok(true))">OK</MudButton>
+		<MudButton Color="Color.Secondary" OnClick="(()=>DialogResult.Cancel())">Cancel</MudButton>
+	</DialogActions>	
+</MudDialog>
+
+@code {
+	private bool _load = false;
+	private List<Server> servers;
+	
+	private async Task<TableData<Server>> LoadData(TableState state)
+	{
+		_load = true;
+		servers = SR.GetServer();
+		await Task.Delay(1000);
+		_load = false;
+		return new TableData<Server>() { TotalItems = servers.Count, Items = servers.Skip(state.Page * state.PageSize).Take(state.PageSize).ToList() };
+	}
+
+}

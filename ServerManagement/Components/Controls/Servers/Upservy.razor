@@ -1,0 +1,102 @@
+﻿@page "/server/add"
+@page "/server/edit/{id:int}"
+@rendermode InteractiveServer
+@inject NavigationManager navigationManager
+
+@inject IJSRuntime JSRuntime
+
+<h3>Upsert Page </h3>
+@if (id != null)
+{
+    <h5>Edit Server</h5>
+}
+else
+{
+    <h5>Add Server</h5>
+}
+<EditForm Model="server" OnValidSubmit="@(() => { UpsertAsync(server); })">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+    <div class="row w-75">
+        <div class="col-2">
+            <label class="col-form-label"> Server Name</label>
+        </div>
+        <div class="col-4">
+            <InputText @bind-Value="server.Name" class="form-control"></InputText>
+        </div>
+        <div class="col">
+            <ValidationMessage For="()=>server.Name"></ValidationMessage>
+        </div>
+     </div>
+    <div class="row w-75">
+        <div class="col-2">
+            <label class="col-form-label"> Server City</label>
+        </div>
+        <div class="col-4">
+           <InputSelect @bind-Value="server.CityId" class="form-select">
+                <option value="@server.CityId">Select City</option>
+                
+            </InputSelect>
+        </div>
+      
+        <div class="row w-75">
+            <div class="col-2">
+                <label class="col-form-label"> Server Online?</label>
+            </div>
+            <div class="col-4">
+                <InputCheckbox @bind-Value="server.IsOnline" class="form-check"></InputCheckbox>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+     <button type="submit" class="btn btn-primary">@(id>0?"Update":"Add")</button>
+    
+</EditForm>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+
+    private ServerReporsitory _SR = new ServerReporsitory();
+ 
+
+    private Server server;
+
+    private List<City> cities;
+
+    private bool IsUpdate;
+
+    protected override void OnParametersSet()
+    {
+        //cities = _SR.GetCities();
+        if (id > 0)
+            server = _SR.GetServerById(id);
+
+        else
+
+            server = new Server();
+    }
+
+    public async Task UpsertAsync(Server server)
+    {
+        IsUpdate = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to Update");
+
+        if (IsUpdate)
+        {
+            if (id != null)
+            {
+                _SR.UpdateServer(server, id);
+            }
+            else
+                _SR.AddServer(server);
+            navigationManager.NavigateTo("/ServerComponent");
+        }
+            
+
+        }
+    }
+}
+
